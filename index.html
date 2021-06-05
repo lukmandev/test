@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<h1>HELLO WORLD</h1>
+
+
+	<script>
+		post({
+			url: "/get",
+			callback: (a) => {
+				console.log(a);
+				console.log(JSON.parse(a));
+			}
+		})
+		async function post(option){
+    let fetchSet = {method:'POST'}
+    if(option.type === undefined || option.type === 'json'){
+            if(objLength(option.body) > 0 && option.body !== undefined){
+                fetchSet.body = JSON.stringify(option.body);
+            }
+            fetchSet.headers = {"Content-Type": "application/json;charset=utf-8"}
+        }
+        if(option.type === 'form'){
+            let formData = new FormData();
+            for(let i = 0; i < option.body; i++){
+                formData.append(i, option[i]);
+            }
+            fetchSet.body = formData;
+            fetchSet.headers = {"Content-type": "application/x-www-form-urlencoded; charset=UTF-8"}
+        }
+        let response = await fetch(option.url,fetchSet);
+        let text = await response.text();
+        option.callback(text);
+    }
+    function objLength(obj){
+        let index = 0;
+        for(let i in obj){
+            if(obj.hasOwnProperty(i)){
+                index++
+            }
+        }
+        return index;
+    }
+	</script>
+</body>
+</html>
